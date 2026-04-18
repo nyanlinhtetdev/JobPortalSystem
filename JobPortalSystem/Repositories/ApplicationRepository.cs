@@ -45,5 +45,31 @@ namespace JobPortalSystem.Api.Repositories
                 })
                 .ToListAsync();
         }
+        public async Task<List<ApplicantDto>> GetApplicantsForJob(Guid jobId)
+        {
+            return await _context.JobApplications
+                .Where(a => a.JobId == jobId)
+                .OrderByDescending(a => a.AppliedAt)
+                .AsNoTracking()
+                .Select(a => new ApplicantDto
+                {
+                    ApplicationId = a.Id,
+                    JobId = a.JobId,
+                    UserId = a.UserId,
+                    Email = a.User.Email,
+                    Status = a.Status,
+                    AppliedAt = a.AppliedAt
+                })
+                .ToListAsync();
+        }
+        public async Task<JobApplication?> GetApplicationById(Guid applicationId)
+        {
+            return await _context.JobApplications.FirstOrDefaultAsync(a => a.Id == applicationId);
+        }
+
+        public Task<int> SaveChangesAsync()
+        {
+            return _context.SaveChangesAsync();
+        }
     }
 }

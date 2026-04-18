@@ -9,5 +9,9 @@ namespace JobPortalSystem.Api.Repositories.Interfaces
         Task CreateApplication(JobApplication application);
         Task<List<JobApplicationDto>> GetApplicationsByUserId(Guid userId);
         Task<bool> JobExists(Guid jobId);
+        Task<List<ApplicantDto>> GetApplicantsForJob(Guid jobId);
+
+        Task<JobApplication?> GetApplicationById(Guid applicationId);
+        Task<int> SaveChangesAsync();
     }
 }
