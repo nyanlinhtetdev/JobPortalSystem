@@ -96,12 +96,5 @@ namespace JobPortalSystem.Api.Controllers
                 Data = result
             });
         }
-
-        [Authorize]
-        [HttpGet]
-        public IActionResult OnlyAuthenticatedUser()
-        {
-            return Ok("You are authenticated.");
-        }
     }
 }
