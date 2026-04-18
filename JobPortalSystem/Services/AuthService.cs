@@ -1,4 +1,5 @@
 ﻿using JobPortal.Database.AppDbContextModels;
+using JobPortalSystem.Api.DTOs.ApiResponse;
 using JobPortalSystem.Api.DTOs.Auth;
 using JobPortalSystem.Api.Repositories.Interfaces;
 using JobPortalSystem.Api.Services.Interfaces;
@@ -27,12 +28,12 @@ namespace JobPortalSystem.Api.Services
             _jwtOptions = jwtOptions.Value;
         }
 
-        public async Task<AuthResponseDto> Register(RegisterRequestDto request)
+        public async Task<ApiResponse<object>> Register(RegisterRequestDto request)
         {
             var user = await _userRepository.GetUserByEmail(request.Email);
             if (user != null)
             {
-                return new AuthResponseDto
+                return new ApiResponse<object>
                 {
                     Success = false,
                     Message = "User has already existed."
@@ -52,7 +53,7 @@ namespace JobPortalSystem.Api.Services
 
             await _userRepository.CreateUser(newUser);
 
-            return new AuthResponseDto
+            return new ApiResponse<object>
             {
                 Success = true,
                 Message = "User has successfully registered."
