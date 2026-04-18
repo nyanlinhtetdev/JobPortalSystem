@@ -19,6 +19,8 @@ public partial class Job
 
     public DateTime? CreatedAt { get; set; }
 
+    public bool IsDeleted { get; set; }
+
     public virtual User Employer { get; set; } = null!;
 
     public virtual ICollection<JobApplication> JobApplications { get; set; } = new List<JobApplication>();
