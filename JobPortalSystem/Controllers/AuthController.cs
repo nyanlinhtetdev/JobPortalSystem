@@ -1,4 +1,5 @@
-﻿using JobPortalSystem.Api.DTOs.Auth;
+﻿using JobPortalSystem.Api.DTOs.ApiResponse;
+using JobPortalSystem.Api.DTOs.Auth;
 using JobPortalSystem.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -22,16 +23,21 @@ namespace JobPortalSystem.Api.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new ApiResponse<object>
+                {
+                    Success = false,
+                    Message = "Validation failed.",
+                    Errors = ModelState
+                });
             }
             List<string> roles = new List<string> { "Job Seeker", "Employer" };
             if(!roles.Any(role => request.Role == role))
             {
-                return BadRequest(new AuthResponseDto
+                return BadRequest(new ApiResponse<object>
                 {
                     Success = false,
-                    Message = "Role must be Job Seeker or Employer."
-                });
+                    Message = "Role must be Job Seeker or Employer.",                  
+                });               
             }
             var result = await _authService.Register(request);
             if (result.Success)
@@ -46,19 +52,29 @@ namespace JobPortalSystem.Api.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new ApiResponse<object>
+                {
+                    Success = false,
+                    Message = "Validation failed.",
+                    Errors = ModelState
+                });
             }
 
             var result = await _authService.Login(request);
             if(result is null)
             {
-                return BadRequest(new AuthResponseDto
+                return BadRequest(new ApiResponse<object>
                 {
                     Success = false,
-                    Message = "Invalid email or password."
-                });
+                    Message = "Invalid email or password."                   
+                });             
             }
-            return Ok(result);
+            return Ok(new ApiResponse<TokenResponseDto>
+            {
+                Success = true,
+                Message = "Successfully created access token and refresh token.",
+                Data = result
+            });
         }
 
         [HttpPost("refresh-token")]
@@ -67,9 +83,18 @@ namespace JobPortalSystem.Api.Controllers
             var result = await _authService.RefreshToken(request);
             if(result is null)
             {
-                return Unauthorized("Invalid refresh token.");
+                return Unauthorized(new ApiResponse<object>
+                {
+                    Success = false,
+                    Message = "Invalid refresh token."
+                });
             }
-            return Ok(result);
+            return Ok(new ApiResponse<TokenResponseDto>
+            {
+                Success = true,
+                Message = "Successfully created access token and refresh token.",
+                Data = result
+            });
         }
 
         [Authorize]
