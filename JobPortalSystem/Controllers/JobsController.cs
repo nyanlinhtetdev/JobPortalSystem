@@ -75,14 +75,14 @@ namespace JobPortalSystem.Api.Controllers
                 });
             }
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (userId == null)
+            if (userId is null)
+            {
                 return Unauthorized(new ApiResponse<object>
                 {
                     Success = false,
                     Message = "You are not authorized."
                 });
-
+            }
             var employerId = Guid.Parse(userId);
             var result = await jobService.CreateJob(request, employerId);
 
@@ -99,14 +99,14 @@ namespace JobPortalSystem.Api.Controllers
         public async Task<IActionResult> GetMyJobs()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (userId == null)
+            if (userId is null)
+            {
                 return Unauthorized(new ApiResponse<object>
                 {
                     Success = false,
                     Message = "You are not authorized."
                 });
-
+            }
             var employerId = Guid.Parse(userId);
 
             var jobList = await jobService.GetMyJobs(employerId);
