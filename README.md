@@ -23,7 +23,7 @@ The **Job Portal System** is a RESTful API backend built with **ASP.NET Core 8**
 
 ## Database Table Structures
 
-## Users
+Users
 
 ```sql
 CREATE TABLE Users (
@@ -34,7 +34,7 @@ CREATE TABLE Users (
     CreatedAt DATETIME2 DEFAULT GETUTCDATE()
 );
 ```
-## Jobs
+Jobs
 
 ```sql
 CREATE TABLE Jobs (
