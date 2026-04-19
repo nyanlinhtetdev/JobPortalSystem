@@ -46,12 +46,12 @@ CREATE TABLE Jobs (
 
     EmployerId UNIQUEIDENTIFIER NOT NULL,
     CreatedAt DATETIME2 DEFAULT GETUTCDATE(),
-    IsDeleted BIT NOT NULL DEFAULT 0;
+    IsDeleted BIT NOT NULL DEFAULT 0,
 
     FOREIGN KEY (EmployerId) REFERENCES Users(Id)
 );
 ```
-## JobApplications
+### JobApplications
 
 ```sql
 CREATE TABLE JobApplications (
@@ -69,7 +69,7 @@ CREATE TABLE JobApplications (
 
 ```
 
-## SavedJobs
+### SavedJobs
 
 ```sql
 CREATE TABLE SavedJobs (
@@ -85,7 +85,7 @@ CREATE TABLE SavedJobs (
 );
 ```
 
-## RefreshTokens
+### RefreshTokens
 
 ```sql
 CREATE TABLE RefreshTokens (
@@ -98,4 +98,17 @@ CREATE TABLE RefreshTokens (
 
     FOREIGN KEY (UserId) REFERENCES Users(Id)
 );
+```
+## Database First Approach
+
+This project uses a **Database-First approach** with Entity Framework Core.
+
+- The database schema is created and managed directly in SQL Server
+- EF Core models and `DbContext` are generated using the `Scaffold-DbContext` command
+- A hybrid approach is used: **EF Core + Dapper** for optimized data access
+
+### Scaffold Command
+
+```bash
+dotnet ef dbcontext scaffold "Server=.;Database=JobPortalDB;User Id=sa;Password=sasa@123;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer -o AppDbContextModels -c AppDbContext -f
 ```
