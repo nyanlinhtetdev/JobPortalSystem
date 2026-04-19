@@ -21,7 +21,7 @@ The **Job Portal System** is a RESTful API backend built with **ASP.NET Core 8**
 - **JobPortalSystem.Api**: The core API project containing Controllers, DTOs, and Middlewares.
 - **JobPortal.Database**: A Class Library project for the data access layer, housing the EF Core `AppDbContext`, database models, and migrations.
 
-# Database Table Structures
+## Database Table Structures
 
 ## Users
 
@@ -34,7 +34,6 @@ CREATE TABLE Users (
     CreatedAt DATETIME2 DEFAULT GETUTCDATE()
 );
 ```
-
 ## Jobs
 
 ```sql
@@ -47,7 +46,56 @@ CREATE TABLE Jobs (
 
     EmployerId UNIQUEIDENTIFIER NOT NULL,
     CreatedAt DATETIME2 DEFAULT GETUTCDATE(),
+    IsDeleted BIT NOT NULL DEFAULT 0;
 
     FOREIGN KEY (EmployerId) REFERENCES Users(Id)
+);
+```
+## JobApplications
+
+```sql
+CREATE TABLE JobApplications (
+    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+
+    JobId UNIQUEIDENTIFIER NOT NULL,
+    UserId UNIQUEIDENTIFIER NOT NULL,
+
+    Status NVARCHAR(50) DEFAULT 'Pending',
+    AppliedAt DATETIME2 DEFAULT GETUTCDATE(),
+
+    FOREIGN KEY (JobId) REFERENCES Jobs(Id),
+    FOREIGN KEY (UserId) REFERENCES Users(Id)
+);
+
+```
+
+## SavedJobs
+
+```sql
+CREATE TABLE SavedJobs (
+    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+
+    JobId UNIQUEIDENTIFIER NOT NULL,
+    UserId UNIQUEIDENTIFIER NOT NULL,
+
+    CreatedAt DATETIME2 DEFAULT GETUTCDATE(),
+
+    FOREIGN KEY (JobId) REFERENCES Jobs(Id),
+    FOREIGN KEY (UserId) REFERENCES Users(Id)
+);
+```
+
+## RefreshTokens
+
+```sql
+CREATE TABLE RefreshTokens (
+    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+
+    UserId UNIQUEIDENTIFIER NOT NULL,
+    Token NVARCHAR(500) NOT NULL,
+    ExpiryDate DATETIME2 NOT NULL,
+    IsRevoked BIT DEFAULT 0,
+
+    FOREIGN KEY (UserId) REFERENCES Users(Id)
 );
 ```
