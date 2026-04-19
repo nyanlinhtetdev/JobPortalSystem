@@ -1,5 +1,7 @@
 using JobPortal.Database.AppDbContextModels;
+using JobPortalSystem.Api.DTOs.ApiResponse;
 using JobPortalSystem.Api.DTOs.Auth;
+using JobPortalSystem.Api.Middlewares;
 using JobPortalSystem.Api.Repositories;
 using JobPortalSystem.Api.Repositories.Interfaces;
 using JobPortalSystem.Api.Services;
@@ -69,6 +71,25 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)),
             ValidateIssuerSigningKey = true
         };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnChallenge = async context =>
+            {
+                context.HandleResponse();
+                context.Response.StatusCode = 401;
+                context.Response.ContentType = "application/json";
+                var response = new ApiResponse<object> { Success = false, Message = "You are not authenticated." };
+                await context.Response.WriteAsJsonAsync(response);
+            },
+            OnForbidden = async context =>
+            {
+                context.Response.StatusCode = 403;
+                context.Response.ContentType = "application/json";
+                var response = new ApiResponse<object> { Success = false, Message = "You do not have permission to access this." };
+                await context.Response.WriteAsJsonAsync(response);
+            }
+        };
     });
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -95,7 +116,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<GlobalExceptionMiddleware>();
+
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
