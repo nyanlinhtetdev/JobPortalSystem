@@ -4,6 +4,7 @@ using JobPortalSystem.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace JobPortalSystem.Api.Controllers
 {
@@ -94,6 +95,26 @@ namespace JobPortalSystem.Api.Controllers
                 Success = true,
                 Message = "Successfully created access token and refresh token.",
                 Data = result
+            });
+        }
+
+        [Authorize]
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            await _authService.Logout(Guid.Parse(userId));
+
+            return Ok(new ApiResponse<object>
+            {
+                Success = true,
+                Message = "Logged out."
             });
         }
     }
