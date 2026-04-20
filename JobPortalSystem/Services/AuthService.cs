@@ -168,5 +168,16 @@ namespace JobPortalSystem.Api.Services
 
             return refreshToken;
         }
+
+        public async Task Logout(Guid userId)
+        {
+            var tokens = await _refreshTokenRepository.GetByUserIdAsync(userId);
+
+            foreach (var token in tokens)
+            {
+                token.IsRevoked = true;
+            }
+            await _refreshTokenRepository.SaveChangesAsync();
+        }
     }
 }

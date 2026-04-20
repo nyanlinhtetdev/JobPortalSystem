@@ -8,6 +8,6 @@ namespace JobPortalSystem.Api.Services.Interfaces
         Task<ApiResponse<object>> Register(RegisterRequestDto request);
         Task<TokenResponseDto?> Login(LoginRequestDto request);
         Task<TokenResponseDto?> RefreshToken(RefreshTokenRequestDto request);
-
+        Task Logout(Guid userId);
     }
 }
