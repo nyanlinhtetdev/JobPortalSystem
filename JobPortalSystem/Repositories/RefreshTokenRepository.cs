@@ -30,6 +30,13 @@ namespace JobPortalSystem.Api.Repositories
                 await _context.SaveChangesAsync();
             }
         }
-
+        public async Task<List<RefreshToken>> GetByUserIdAsync(Guid id)
+        {
+            return await _context.RefreshTokens.Where(token => token.UserId == id).ToListAsync();
+        }
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
     }
 }
