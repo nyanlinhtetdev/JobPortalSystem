@@ -112,3 +112,13 @@ This project uses a **Database-First approach** with Entity Framework Core.
 ```bash
 dotnet ef dbcontext scaffold "Server=.;Database=JobPortalDB;User Id=sa;Password=sasa@123;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer -o AppDbContextModels -c AppDbContext -f
 ```
+
+## API Testing (Postman)
+
+You can test the API using the provided Postman collection:
+
+1. Import the collection from `/Postman/Job Portal API.postman_collection.json`
+2. Import the environment file
+3. Set `baseUrl` to your local server
+4. Start with **Register → Login**
+5. Token will be automatically saved for authorized requests
